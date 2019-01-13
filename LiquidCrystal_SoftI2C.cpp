@@ -1,7 +1,7 @@
-#include "LiquidCrystal_I2C.h"
+#include "LiquidCrystal_SoftI2C.h"
 #include <inttypes.h>
 #include <Arduino.h>
-#include <Wire.h>
+
 
 // When the display powers up, it is configured as follows:
 //
@@ -22,17 +22,18 @@
 // can't assume that its in that state when a sketch starts (and the
 // LiquidCrystal constructor is called).
 
-LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows, uint8_t charsize)
+LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows, SoftwareWire *wire, uint8_t charsize)
 {
 	_addr = lcd_addr;
 	_cols = lcd_cols;
 	_rows = lcd_rows;
+	_wire = wire;
 	_charsize = charsize;
 	_backlightval = LCD_BACKLIGHT;
 }
 
 void LiquidCrystal_I2C::begin() {
-	Wire.begin();
+	_wire->begin();
 	_displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 
 	if (_rows > 1) {
@@ -225,9 +226,9 @@ void LiquidCrystal_I2C::write4bits(uint8_t value) {
 }
 
 void LiquidCrystal_I2C::expanderWrite(uint8_t _data){
-	Wire.beginTransmission(_addr);
-	Wire.write((int)(_data) | _backlightval);
-	Wire.endTransmission();
+	_wire->beginTransmission(_addr);
+	_wire->write((int)(_data) | _backlightval);
+	_wire->endTransmission();
 }
 
 void LiquidCrystal_I2C::pulseEnable(uint8_t _data){

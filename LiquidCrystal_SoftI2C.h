@@ -4,6 +4,8 @@
 #include <inttypes.h>
 #include <Print.h>
 
+#include <SoftwareWire.h>
+
 // commands
 #define LCD_CLEARDISPLAY 0x01
 #define LCD_RETURNHOME 0x02
@@ -68,7 +70,7 @@ public:
 	 * @param lcd_rows	Number of rows your LCD display has.
 	 * @param charsize	The size in dots that the display has, use LCD_5x10DOTS or LCD_5x8DOTS.
 	 */
-	LiquidCrystal_I2C(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows, uint8_t charsize = LCD_5x8DOTS);
+	LiquidCrystal_I2C(uint8_t lcd_addr, uint8_t lcd_cols, uint8_t lcd_rows, SoftwareWire *wire, uint8_t charsize = LCD_5x8DOTS);
 
 	/**
 	 * Set the LCD display in the correct begin state, must be called before anything else is done.
@@ -160,6 +162,8 @@ private:
 	uint8_t _rows;
 	uint8_t _charsize;
 	uint8_t _backlightval;
+
+	SoftwareWire *_wire;
 };
 
 #endif // FDB_LIQUID_CRYSTAL_I2C_H
